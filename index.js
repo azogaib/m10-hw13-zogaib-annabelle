@@ -9,7 +9,7 @@ formEl.onsubmit = function(e) {
   e.preventDefault();
 
   // capture user's input from form field
-  const userInput = inputEl.value.trim()
+  let userInput = inputEl.value.trim()
   // abort API call if user entered no value
   if (!userInput) return
   // call the API and then update the page
@@ -33,30 +33,29 @@ async function getWeather(query) {
     '&units=imperial&appid=6efff70fe1477748e31c17d1c504635f'
   )
   const data = await res.json()
-
-      // location not found, throw error/reject promise
-      if (data.cod === "404") throw new Error('location not found')
-      // create weather icon URL
-      const iconUrl = 'https://openweathermap.org/img/wn/' +
-        data.weather[0].icon +
-        '@2x.png'
-      const description = data.weather[0].description
-      const actualTemp = data.main.temp
-      const feelsLikeTemp = data.main.feels_like
-      const place = data.name + ", " + data.sys.country
-      // create JS date object from Unix timestamp
-      const updatedAt = new Date(data.dt * 1000)
-      // this object is used by displayWeatherInfo to update the HTML
-      return {
-        coords: data.coord.lat + ',' + data.coord.lon,
-        description: description,
-        iconUrl: iconUrl,
-        actualTemp: actualTemp,
-        feelsLikeTemp: feelsLikeTemp,
-        place: place,
-        updatedAt: updatedAt
+  // location not found, throw error/reject promise
+  if (data.cod === "404") throw new Error('location not found')
+  // create weather icon URL
+  let iconUrl = 'https://openweathermap.org/img/wn/' +
+    data.weather[0].icon +
+    '@2x.png'
+  const description = data.weather[0].description
+  const actualTemp = data.main.temp
+  const feelsLikeTemp = data.main.feels_like
+  const place = data.name + ", " + data.sys.country
+  // create JS date object from Unix timestamp
+  let updatedAt = new Date(data.dt * 1000)
+  // this object is used by displayWeatherInfo to update the HTML
+  return {
+    coords: data.coord.lat + ',' + data.coord.lon,
+    description: description,
+    iconUrl: iconUrl,
+    actualTemp: actualTemp,
+    feelsLikeTemp: feelsLikeTemp,
+    place: place,
+    updatedAt: updatedAt
       }
-    )
+    
 }
 
 // show error message when location isn't found
@@ -68,7 +67,6 @@ const displayLocNotFound = () => {
   errMsg.textContent = "Location not found"
   weatherContainer.appendChild(errMsg)
 }
-
 
   // updates HTML to display weather info
   const displayWeatherInfo = (weatherObj) => { weatherContainer.innerHTML = "";
